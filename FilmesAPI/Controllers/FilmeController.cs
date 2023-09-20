@@ -20,7 +20,7 @@ public class FilmeController : ControllerBase
     }
 
     [HttpGet]
-    public List<Filme> BuscarFilmes()
+    public IEnumerable<Filme> BuscarFilmes()
     {
         return filmes;
     }
