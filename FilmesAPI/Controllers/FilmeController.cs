@@ -2,6 +2,7 @@
 using FilmesAPI.Data;
 using FilmesAPI.Data.DTOs;
 using FilmesAPI.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,5 +49,60 @@ public class FilmeController : ControllerBase
         }
 
         return Ok(filme);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult AtualizarFilme(int id, [FromBody] FilmeDTO filmeDTO)
+    {
+        var filme = _contextFilme.Filmes.FirstOrDefault(filme => filme.Id == id);
+
+        if (filme == null) 
+        {
+            return NotFound();
+        }
+        
+        _mapper.Map(filmeDTO, filme);
+        _contextFilme.SaveChanges();
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public IActionResult AtualizarFilme(int id, JsonPatchDocument<FilmeDTO> patch)
+    {
+        var filme = _contextFilme.Filmes.FirstOrDefault(filme => filme.Id == id);
+
+        if (filme == null)
+        {
+            return NotFound();
+        }
+
+        var filmeDTO = _mapper.Map<FilmeDTO>(filme);
+        patch.ApplyTo(filmeDTO, ModelState);
+
+        if (!TryValidateModel(filmeDTO))
+        {
+            return ValidationProblem(ModelState);
+        }
+
+        _mapper.Map(filmeDTO, filme);
+        _contextFilme.SaveChanges();
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeletarFilme(int id)
+    {
+        var filme = _contextFilme.Filmes.FirstOrDefault(filme => filme.Id == id);
+
+        if (filme == null)
+        {
+            return NotFound();
+        }
+
+        _contextFilme.Remove(filme);
+        _contextFilme.SaveChanges();
+        return NoContent();
     }
 }
