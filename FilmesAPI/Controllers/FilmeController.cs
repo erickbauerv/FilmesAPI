@@ -39,12 +39,23 @@ public class FilmeController : ControllerBase
         return CreatedAtAction(nameof(BuscarFilmePorId), new { id = filme.Id }, filme);
     }
 
+    /// <summary>
+    /// Método para buscar filmes do banco de dados.
+    /// </summary>
+    /// <param name="skip">Número de registros para serem pulados na paginação.</param>
+    /// <param name="take">Quantidade de registros para buscar por paginação.</param>
+    /// <returns>Lista de filmes.</returns>
     [HttpGet]
     public IEnumerable<Filme> BuscarFilmes([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
         return _contextFilme.Filmes.Skip(skip).Take(take);
     }
 
+    /// <summary>
+    /// Método para buscar um filme do banco de dados pelo seu id.
+    /// </summary>
+    /// <param name="id">Id do filme que vai ser buscado.</param>
+    /// <returns>IActionResult</returns>
     [HttpGet("{id}")]
     public IActionResult BuscarFilmePorId(int id)
     {
@@ -58,6 +69,12 @@ public class FilmeController : ControllerBase
         return Ok(filme);
     }
 
+    /// <summary>
+    /// Método para atualizar um filme.
+    /// </summary>
+    /// <param name="id">Id do filme que vai ser atualizado.</param>
+    /// <param name="filmeDTO">DTO com as informações atualizadas do filme.</param>
+    /// <returns>IActionResult</returns>
     [HttpPut("{id}")]
     public IActionResult AtualizarFilme(int id, [FromBody] FilmeDTO filmeDTO)
     {
@@ -74,6 +91,12 @@ public class FilmeController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Método para atualizar um filme sem a necessidade de passar todas as informações do FilmeDTO.
+    /// </summary>
+    /// <param name="id">Id do filme que vai ser atualizado.</param>
+    /// <param name="patch">Informações que seram atualizadas.</param>
+    /// <returns>IActionResult</returns>
     [HttpPatch("{id}")]
     public IActionResult AtualizarFilme(int id, JsonPatchDocument<FilmeDTO> patch)
     {
@@ -98,6 +121,11 @@ public class FilmeController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Método para excluir um fileme do banco de dados.
+    /// </summary>
+    /// <param name="id">Id do filme que vai ser excluido .</param>
+    /// <returns>IActionResult</returns>
     [HttpDelete("{id}")]
     public IActionResult DeletarFilme(int id)
     {
